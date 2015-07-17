@@ -1,31 +1,29 @@
 #include <stdio.h>
 #include <string.h>
 #include <string>
+#include <vector>
 #include "internal/lang_script.h"
 #include "public/compact_lang_det.h"
 #include "public/encodings.h"
 using namespace CLD2;
 
+// Conveys the same information as ReturnChunk, but contains language code instead of
+// CLD's language representation
+typedef struct {
+  int offset;
+  uint16 bytes;
+  const char *langcode;
+} ReturnChunk;
+
 typedef struct {
   const char *name;
   const char *code;
   bool reliable;
-  //ReturnChunk *re;
+  int num_chunks;
+  ReturnChunk *returnchunksptr;
 } RESULT;
 
-// Conveys the same information as ReturnChunk, but is more FFI-friendly (for linking to Ruby).
-typedef struct {
-  const char *langcode;
-  const char *content;
-} ReturnChunk;
-
 extern "C" {
-  ReturnChunk convertToReturnChunk(const char* src, ResultChunk* resultchunk) {
-    ReturnChunk rc;
-    rc.langcode = LanguageCode(static_cast<Language>(resultchunk->lang1));
-    rc.content = std::string(src, resultchunk->offset, resultchunk->bytes).c_str(); 
-    return rc;
-  }
 
   RESULT detectLanguageThunkInt(const char * src, bool is_plain_text) {
     const int flags = 0;  // no flags
@@ -36,12 +34,12 @@ extern "C" {
     Language language3[3];
     int percent3[3];
     double normalized_score3[3];
-    ResultChunkVector* resultchunkvector;
+    ResultChunkVector resultchunkvector;
     int text_bytes;
-    bool is_reliable;
+    bool is_reliable;    
     Language lang;
-
-    lang = ExtDetectLanguageSummary(src,
+    lang = ExtDetectLanguageSummary(
+                          src,
                           strlen(src),
                           is_plain_text,
                           &cldhints,
@@ -49,14 +47,26 @@ extern "C" {
                           language3,
                           percent3,
                           normalized_score3,
-                          resultchunkvector,
+                          &resultchunkvector,
                           &text_bytes,
                           &is_reliable);
+
+    // Constructs chunks to return
+    int num_chunks = static_cast<int>(resultchunkvector.size());
+
+    ReturnChunk *returnchunkptr = new ReturnChunk [num_chunks];
+    for (int i = 0; i < num_chunks; i++) {
+      returnchunkptr[i].offset = resultchunkvector[i].offset;
+      returnchunkptr[i].bytes = resultchunkvector[i].bytes;
+      returnchunkptr[i].langcode = LanguageCode(static_cast<Language>(resultchunkvector[i].lang1));
+    }
 
     RESULT res;
     res.name = LanguageName(lang);
     res.code = LanguageCode(lang);
     res.reliable = is_reliable;
+    res.num_chunks = num_chunks;
+    res.returnchunksptr = returnchunkptr;
     return res;
   }
 }
