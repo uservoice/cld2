@@ -3,6 +3,7 @@
 .bundle
 .config
 .yardoc
+.gitignore
 Gemfile.lock
 InstalledFiles
 _yardoc
@@ -15,14 +16,9 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
-ext/cld/*.o
-ext/cld/*.a
-ext/cld/*.so
 CMakeCache.txt
 CMakeFiles
 *.cmake
-Makefile
-ext/cld/lib
 *.log
 build/
 install_manifest.txt
