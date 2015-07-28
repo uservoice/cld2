@@ -4,6 +4,7 @@
 .config
 .yardoc
 .gitignore
+vendor
 Gemfile.lock
 InstalledFiles
 _yardoc
