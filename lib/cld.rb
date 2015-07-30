@@ -31,12 +31,20 @@ module CLD
       hash[:chunks] = []
       0.upto(result[:num_chunks] - 1) do |i|
         chunk = Chunk.new(result[:chunks_array] + (i * Chunk.size))
-        hash[:chunks] << Hash[ chunk.members.map {|member| [member.to_sym, chunk[member]]} ]
+        hash[:chunks] << {
+          content: text.byteslice(chunk[:offset], chunk[:bytes]),
+          code: chunk[:code],
+        }
       end
     end
 
     hash
   end
+
+  # def self.get_top_3_languages(lang_results_ptr)
+  #   lang_arr = []
+
+  # end
 
   private
 
@@ -51,7 +59,8 @@ module CLD
   end
 
   class Chunk < FFI::Struct
-    layout  :offset, :int, :bytes, :uint16, 
+    layout  :offset, :int, :bytes, :uint16,
+    # layout  :content, :string, 
             :code, :string
   end
 

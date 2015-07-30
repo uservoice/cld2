@@ -71,14 +71,10 @@ extern "C" {
     int num_chunks = static_cast<int>(resultchunkvector.size());
     ReturnChunk *returnchunkptr = new ReturnChunk [num_chunks];
     for (int i = 0; i < num_chunks; i++) {
-      returnchunkptr[i].offset = resultchunkvector[i].offset;
-      returnchunkptr[i].bytes = resultchunkvector[i].bytes;
-      returnchunkptr[i].langcode = LanguageCode(static_cast<Language>(resultchunkvector[i].lang1));
-
-      // ResultChunk rc = resultchunkvector[i];
-      // returnchunkptr[i].offset = rc.offset;
-      // returnchunkptr[i].bytes = rc.bytes;
-      // returnchunkptr[i].langcode = LanguageCode(static_cast<Language>(rc.lang1));
+      ResultChunk rc = resultchunkvector[i];
+      returnchunkptr[i].offset = rc.offset;
+      returnchunkptr[i].bytes = rc.bytes;
+      returnchunkptr[i].langcode = LanguageCode(static_cast<Language>(rc.lang1));
     }
 
     RESULT res;
