@@ -29,10 +29,9 @@ module CLD
       result_hash[:chunks] = get_chunk_results(result[:chunks_results_ptr], result[:num_chunks], text)
     end
 
-    # FFI::Pointer lang_results_ptr = 
-
     result_hash
   end
+
 
   private
 
@@ -47,8 +46,7 @@ module CLD
   end
 
   class Chunk < FFI::Struct
-    layout  :offset, :int, :bytes, :uint16,
-            :code, :string
+    layout  :offset, :int, :bytes, :uint16, :code, :string
   end
 
   def self.get_array_from_ptr(arr_ptr, arr_size, class_type)
