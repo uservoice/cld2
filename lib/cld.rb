@@ -22,36 +22,42 @@ module CLD
       map {|member| [member.to_sym, result[member]]} ]
 
     if verbose
-      hash[:top3] = []
-      0.upto(2) do |i|
-        lang_result = LanguageResult.new(result[:lang_results_arr] + (i * LanguageResult.size))
-        hash[:top3] << Hash[ lang_result.members. map {|member| [member.to_sym, lang_result[member]]} ]
-      end
-
-      hash[:chunks] = []
-      0.upto(result[:num_chunks] - 1) do |i|
-        chunk = Chunk.new(result[:chunks_array] + (i * Chunk.size))
-        hash[:chunks] << {
-          content: text.byteslice(chunk[:offset], chunk[:bytes]),
-          code: chunk[:code],
-        }
-      end
+      hash[:top_langs] = get_top_languages(result[:lang_results_ptr])
+      hash[:chunks] = get_chunk_results(result[:chunks_results_ptr], result[:num_chunks], text)
     end
 
     hash
   end
 
-  # def self.get_top_3_languages(lang_results_ptr)
-  #   lang_arr = []
+  def self.get_top_languages(lang_results_ptr)
+    lang_arr = []
+    0.upto(2) do |i|
+      lang_result = LanguageResult.new(lang_results_ptr + (i * LanguageResult.size))
+      if !lang_result[:score].zero?
+        lang_arr << Hash[ lang_result.members. map {|member| [member.to_sym, lang_result[member]]} ]
+      end
+    end
+    lang_arr
+  end
 
-  # end
+  def self.get_chunk_results(chunks_results_ptr, num_chunks, text)
+    chunks_arr = []
+    0.upto(num_chunks - 1) do |i|
+      chunk = Chunk.new(chunks_results_ptr + (i * Chunk.size))
+      chunks_arr << {
+        content: text.byteslice(chunk[:offset], chunk[:bytes]),
+        code: chunk[:code],
+      }
+    end
+    chunks_arr
+  end
 
   private
 
   class ReturnValue < FFI::Struct
     layout  :name, :string, :code, :string, :reliable, :bool,
-            :lang_results_arr, :pointer,
-            :num_chunks, :int, :chunks_array, :pointer
+            :lang_results_ptr, :pointer,
+            :num_chunks, :int, :chunks_results_ptr, :pointer
   end
   
   class LanguageResult < FFI::Struct
@@ -60,7 +66,6 @@ module CLD
 
   class Chunk < FFI::Struct
     layout  :offset, :int, :bytes, :uint16,
-    # layout  :content, :string, 
             :code, :string
   end
 
