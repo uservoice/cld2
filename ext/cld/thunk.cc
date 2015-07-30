@@ -7,8 +7,14 @@
 #include "public/encodings.h"
 using namespace CLD2;
 
-// Conveys the same information as ReturnChunk, but contains language code instead of
-// CLD's language representation
+typedef struct {
+  const char *code;
+  int percent;
+  double score;
+} LanguageResult;
+
+// Conveys the same information as CLD::ResultChunk, but contains language code 
+// instead of CLD's internal language representation.
 typedef struct {
   int offset;
   uint16 bytes;
@@ -19,6 +25,7 @@ typedef struct {
   const char *name;
   const char *code;
   bool reliable;
+  LanguageResult *langresults;
   int num_chunks;
   ReturnChunk *returnchunksptr;
 } RESULT;
@@ -38,6 +45,7 @@ extern "C" {
     int text_bytes;
     bool is_reliable;    
     Language lang;
+
     lang = ExtDetectLanguageSummary(
                           src,
                           strlen(src),
@@ -51,20 +59,33 @@ extern "C" {
                           &text_bytes,
                           &is_reliable);
 
-    // Constructs chunks to return
-    int num_chunks = static_cast<int>(resultchunkvector.size());
+    // Construct language results to return
+    LanguageResult *langresults = new LanguageResult [3];
+    for (int i = 0; i < 3; i++) {
+      langresults[i].code = LanguageCode(language3[i]);
+      langresults[i].percent = percent3[i];
+      langresults[i].score = normalized_score3[i];
+    }
 
+    // Constructs individual chunk results to return
+    int num_chunks = static_cast<int>(resultchunkvector.size());
     ReturnChunk *returnchunkptr = new ReturnChunk [num_chunks];
     for (int i = 0; i < num_chunks; i++) {
       returnchunkptr[i].offset = resultchunkvector[i].offset;
       returnchunkptr[i].bytes = resultchunkvector[i].bytes;
       returnchunkptr[i].langcode = LanguageCode(static_cast<Language>(resultchunkvector[i].lang1));
+
+      // ResultChunk rc = resultchunkvector[i];
+      // returnchunkptr[i].offset = rc.offset;
+      // returnchunkptr[i].bytes = rc.bytes;
+      // returnchunkptr[i].langcode = LanguageCode(static_cast<Language>(rc.lang1));
     }
 
     RESULT res;
     res.name = LanguageName(lang);
     res.code = LanguageCode(lang);
     res.reliable = is_reliable;
+    res.langresults = langresults;
     res.num_chunks = num_chunks;
     res.returnchunksptr = returnchunkptr;
     return res;
