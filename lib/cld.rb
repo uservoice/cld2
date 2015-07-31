@@ -32,6 +32,16 @@ module CLD
     result_hash
   end
 
+  def self.test_memory_leak
+    10.times do
+      GC.start # try to clean up
+      10000.times do
+        detect_language("हैदराबाद उच्चार ऐका सहाय्य माहिती तेलुगू హైదరాబాదు حیدر آباد", true)
+      end
+      mem = `ps -o rss -p #{Process.pid}`[/\d+/]
+      puts "Current memory:  #{mem}"
+    end
+  end
 
   private
 
