@@ -17,6 +17,9 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
+-ext/cld/*.o
+-ext/cld/*.a
+-ext/cld/*.so
 CMakeCache.txt
 CMakeFiles
 *.cmake

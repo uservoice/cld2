@@ -2,7 +2,7 @@
 require File.expand_path('../lib/cld/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Alessandro Dal Grande", "Jason Toy"]
+  gem.authors       = ["Alessandro Dal Grande", "Jason Toy", "Lien Hoang"]
   gem.email         = ["jtoy@jtoy.net"]
   gem.description   = %q{Compact Language Detection for Ruby}
   gem.summary       = %q{Compact Language Detection for Ruby}
