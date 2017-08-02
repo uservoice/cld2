@@ -21,10 +21,10 @@ $objs = ["internal/cldutil.o",
   "internal/cld2_generated_cjk_compatible.o",
   "internal/cld_generated_cjk_delta_bi_4.o",
   "internal/generated_distinct_bi_0.o",
-  "internal/cld2_generated_quadchrome0122_2.o",
-  "internal/cld2_generated_deltaoctachrome0122.o",
-  "internal/cld2_generated_distinctoctachrome0122.o",
-  "internal/cld_generated_score_quad_octa_0122_2.o",
+  "internal/cld2_generated_quadchrome_2.o",
+  "internal/cld2_generated_deltaoctachrome.o",
+  "internal/cld2_generated_distinctoctachrome.o",
+  "internal/cld_generated_score_quad_octa_2.o",
   "thunk.o"]
 
 if have_library('stdc++')
