@@ -19,12 +19,12 @@ $objs = ["internal/cldutil.o",
   "internal/utf8statetable.o",
   "internal/cld_generated_cjk_uni_prop_80.o",
   "internal/cld2_generated_cjk_compatible.o",
-  "internal/cld_generated_cjk_delta_bi_4.o",
+  "internal/cld_generated_cjk_delta_bi_32.o",
   "internal/generated_distinct_bi_0.o",
-  "internal/cld2_generated_quadchrome_2.o",
-  "internal/cld2_generated_deltaoctachrome.o",
-  "internal/cld2_generated_distinctoctachrome.o",
-  "internal/cld_generated_score_quad_octa_2.o",
+  "internal/cld2_generated_quad0122.o",
+  "internal/cld2_generated_deltaocta0122.o",
+  "internal/cld2_generated_distinctocta0122.o",
+  "internal/cld_generated_score_quad_octa_0122.o",
   "thunk.o"]
 
 if have_library('stdc++')
