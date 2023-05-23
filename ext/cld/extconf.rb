@@ -27,6 +27,9 @@ $objs = ["internal/cldutil.o",
   "internal/cld_generated_score_quad_octa_0122.o",
   "thunk.o"]
 
+# Prevents issues compiling with newer GCC versions
+$defs.push("-std=c++98")
+
 if have_library('stdc++')
   create_makefile('libcld2')
 end
