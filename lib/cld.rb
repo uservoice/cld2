@@ -16,7 +16,7 @@ module CLD
     FFI::Platform::LIBSUFFIX
   end
 
-  ffi_lib File.join(File.expand_path(File.dirname(__FILE__)), '..', 'ext', 'cld', 'libcld2.' + suffix)
+  ffi_lib File.join(File.expand_path(File.dirname(__FILE__)), 'libcld2.' + suffix)
   
   def self.detect_language(text, verbose=false, is_plain_text=true)
     result = detect_language_ext(text.to_s, is_plain_text)
